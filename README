@@ -1,0 +1,106 @@
+Test : Search functionality on the Selenium Playground website
+--------
+Approach
+--------
+This TestNG Selenium script tests the search functionality on the Selenium Playground Table Search Demo page:
+1.	Navigates to the demo URL.
+2.	Locates the search box and searches for "New York."
+3.	Validates that the search results show 5 entries out of 24 total entries.
+------------------------------------------------------------------------------------------
+How to Run
+1.	Clone or download the script which I pasted below for reference.
+2.	Set up the environment: 
+------------------------------------------------------------------------------------------
+o	Install Java (JDK 8+).
+o	Install Maven.
+o	Include dependencies (selenium-java and testng) in your pom.xml: 
+o	<dependencies>
+o	    <dependency>
+o	        <groupId>org.seleniumhq.selenium</groupId>
+o	        <artifactId>selenium-java</artifactId>
+o	        <version>4.12.0</version> <!-- Use the latest stable version -->\n</dependency>
+o	    
+o	    <dependency>
+o	        <groupId>org.testng</groupId>
+o	        <artifactId>testng</artifactId>
+o	        <version>7.8.0</version> <!-- Latest TestNG version -->\n</dependency>
+o	</dependencies>
+-------------------------------------------------------------------------------------------
+3.	Run the test:
+           Used TestNG from my Eclipse IDE to run the Search_Test_Elastiq class and package. testNGLearnig
+Notes
+•	Browser Compatibility: The script is configured for Chrome. Modify the setup method to support other browsers.
+•	TestNG is used for structured testing and reporting.
+
+------------------------------------------------------------------
+Selenium Script for Search Test which I did it in Java and Test NG.
+------------------------------------------------------------------
+package testNGLearnig;
+
+import java.time.Duration;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+    
+public class Search_Test_Elastiq
+{
+	private WebDriver driver;
+	
+	@BeforeClass
+	 void setup() {
+		// Set up ChromeDriver using WebDriver
+		driver = new ChromeDriver();
+		
+		// Navigate to the Selenium Playground Table Search Demo
+		driver.get("https://www.lambdatest.com/selenium-playground/table-sort-search-demo");
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));		
+	}
+	
+	@Test
+	public void Search_New_York()
+	{
+		// Locate the search box and perform a search for "New York"
+	  	driver.findElement(By.xpath("//input[@type=\"search\"]")).sendKeys("New York");
+	  	
+	  	//Validates that the search results show 5 entries out of 24 total entries.
+		WebElement msgConfirmation= driver.findElement(By.xpath("//div[@id=\"example_info\"]"));
+		System.out.println("Search Results Message : " +msgConfirmation.getText());
+		Assert.assertEquals(msgConfirmation.getText(), "Showing 1 to 5 of 5 entries (filtered from 24 total entries)");
+	}
+	
+	@AfterClass
+	void tearDown() {
+		// Quit the driver
+		driver.quit();
+	}
+}	
+		
+
+
+---------------------
+Console Test Result :
+---------------------
+Search Results Message : Showing 1 to 5 of 5 entries (filtered from 24 total entries)
+PASSED: testNGLearnig.Search_Test_Elastiq.Search_New_York
+
+===============================================
+    Default test
+    Tests run: 1, Failures: 0, Skips: 0
+===============================================
+
+
+===============================================
+Default suite
+Total tests run: 1, Passes: 1, Failures: 0, Skips: 0
+===============================================
+ 
+
+
