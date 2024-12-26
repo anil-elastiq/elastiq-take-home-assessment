@@ -8,6 +8,7 @@ This project involves creating a Selenium automation script in Python to validat
 ## Project Structure
 The project contains the following files:
 - **`qa_selenium_test.py`**: Main Python script containing test cases.
+- **`conftest.py`**: pytest setup file having setup & teardown, logs features
 - **`requirements.txt`**: Dependencies for the project.
 - **`README.md`**: Documentation (this file).
 
@@ -27,7 +28,6 @@ The project contains the following files:
 
 ### Code Highlights
 - The `setup_and_teardown` fixture dynamically supports different browsers (`Chrome`, `Firefox`, `Edge`) and modes (`headless` and `non_headless`).
-- The `enter_text_into_search_box` function abstracts the search box interaction for reusability.
 - The tests are written using the `pytest` framework for modularity and scalability.
 
 ---
@@ -41,7 +41,6 @@ Ensure the following are installed:
 
 ## Installation and Setup
 
-### Step 1: Clone the Repository
 ### Step 1: Download the Code
 You can download the files directly from the pull request or the provided repository branch.
 
@@ -58,6 +57,9 @@ pytest -v qa_selenium_test.py
 
 To run in **headless mode** or with a different browser, modify the `setup_and_teardown` fixture in `qa_selenium_test.py`.
 
+Check generated log file in logs folder.
+
+
 ---
 
 ## Best Practices Followed
@@ -67,6 +69,7 @@ To run in **headless mode** or with a different browser, modify the `setup_and_t
    - Validates both the result text and the table row count.
 4. **Browser Compatibility**: Supports Chrome, Firefox, and Edge browsers.
 5. **Headless Mode**: Allows tests to run without GUI for CI/CD environments.
+6. **Logs**: logs setup is done using conftest.py for debugging process.
 
 ---
 
