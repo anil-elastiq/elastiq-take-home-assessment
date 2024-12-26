@@ -49,10 +49,13 @@ def setup_and_teardown():
     driver.quit()
 
 
-def enter_text_into_search_box(driver, search_text):
+def enter_text_into_search_box(driver, input_text):
     search_box = driver.find_element(By.XPATH, "//input[@type='search']")
     search_box.clear()
-    search_box.send_keys(search_text)
+    search_box.send_keys(input_text)
+
+
+search_text = "New York"    # search string
 
 
 # Test Cases
@@ -60,8 +63,7 @@ def test_search_result_text(setup_and_teardown):
     driver = setup_and_teardown
 
     # Perform search
-    search_text = "New York"    # search string
-    enter_text_into_search_box(driver, search_text)     # search function
+    enter_text_into_search_box(driver, search_text)
 
     # Validate the search result text
     actual_text = driver.find_element(By.XPATH, "//div[@role='status']").text
@@ -73,8 +75,7 @@ def test_search_result_table(setup_and_teardown):
     driver = setup_and_teardown
 
     # Perform search
-    search_text = "New York"    # search string
-    enter_text_into_search_box(driver, search_text)    # search function
+    enter_text_into_search_box(driver, search_text)
 
     # validate rows having searched text in table
     actual_count = len(driver.find_elements(By.XPATH,
