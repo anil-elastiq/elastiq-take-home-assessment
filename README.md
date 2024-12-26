@@ -55,7 +55,7 @@ Run the tests using `pytest`:
 pytest -v qa_selenium_test.py
 ```
 
-To run in **headless mode** or with a different browser, modify the `setup_and_teardown` fixture in `qa_selenium_test.py`.
+To run in **headless mode** or with a different browser, modify the `setup_and_teardown` fixture in `conftest.py`.
 
 Check generated log file in logs folder.
 
