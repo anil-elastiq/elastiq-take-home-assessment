@@ -1,22 +1,132 @@
-# OpenSearch hosting in Kubernetes using Operator
+# OpenSearch Deployment with Operator on GKE Autopilot using Terraform
 
-## Objective
-Host an open-source OpenSearch solution inside **Google Cloud Autopilot**, **GKE Standard**, or the equivalent on **AWS** or **Azure** using [Operator](https://github.com/opensearch-project/opensearch-k8s-operator)
+# Main Terraform Configuration for GKE Autopilot Cluster and OpenSearch Installation
 
-> [!NOTE]
-> **Deliverables:**
-> 1. Provide necessary **credentials** (cloud account, API keys, etc.) to validate the solution.
-> 1. **Terraform code**.
-> 1. A brief documentation or **README** explaining the approach, best practices followed, and how to validate the deployment.
+provider "google" {
+  project = var.project_id
+  region  = var.region
+}
 
-> [!TIP]
-> Implement GCP Workload Identity for secure identity management and avoid static credentials.
+# Create a GKE Autopilot Cluster
+resource "google_container_cluster" "gke_autopilot" {
+  name     = "opensearch-cluster"
+  location = var.region
 
-> [!IMPORTANT]
-> Please install OpenSearch only using the operator no helm or any other way to install it.
+  enable_autopilot = true
 
-> [!CAUTION]
-> - **K8S Best Practices:** Follow cloud security best practices for cluster setup and management e.g., least privilege principle, network policies, node auto-upgrade.
-> - **Cost Optimized:** Ensure that all resources created follow cloud cost-optimization guidelines.
+  workload_identity_config {
+    identity_namespace = "${var.project_id}.svc.id.goog"
+  }
+}
 
-**Good luck!**
+# Create a Kubernetes Namespace for OpenSearch
+resource "kubernetes_namespace" "opensearch" {
+  metadata {
+    name = "opensearch"
+  }
+}
+
+# Grant Workload Identity Permissions for OpenSearch Operator
+resource "google_service_account" "opensearch_operator" {
+  account_id   = "opensearch-operator"
+  display_name = "OpenSearch Operator Service Account"
+}
+
+resource "google_project_iam_binding" "opensearch_operator_bind" {
+  project = var.project_id
+  role    = "roles/iam.workloadIdentityUser"
+
+  members = [
+    "serviceAccount:${var.project_id}.svc.id.goog[opensearch/opensearch-operator]"
+  ]
+}
+
+# Deploy OpenSearch Operator YAML
+resource "kubernetes_manifest" "opensearch_operator" {
+  manifest = {
+    "apiVersion" = "apps/v1"
+    "kind"       = "Deployment"
+    "metadata" = {
+      "name"      = "opensearch-operator"
+      "namespace" = "opensearch"
+    }
+    "spec" = {
+      "replicas" = 1
+      "selector" = {
+        "matchLabels" = {
+          "app" = "opensearch-operator"
+        }
+      }
+      "template" = {
+        "metadata" = {
+          "labels" = {
+            "app" = "opensearch-operator"
+          }
+        }
+        "spec" = {
+          "serviceAccountName" = "opensearch-operator"
+          "containers" = [
+            {
+              "name"  = "opensearch-operator"
+              "image" = "opensearchproject/opensearch-operator:latest"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+
+# Create OpenSearch Cluster Custom Resource
+resource "kubernetes_manifest" "opensearch_cluster" {
+  manifest = {
+    "apiVersion" = "opensearch.opensearch.org/v1"
+    "kind"       = "OpenSearchCluster"
+    "metadata" = {
+      "name"      = "opensearch-cluster"
+      "namespace" = "opensearch"
+    }
+    "spec" = {
+      "general" = {
+        "version" = "2.9.0"
+      }
+      "nodePools" = [
+        {
+          "name"     = "master"
+          "replicas" = 3
+          "roles"    = ["master"]
+          "resources" = {
+            "requests" = {
+              "cpu"    = "500m"
+              "memory" = "1Gi"
+            }
+          }
+        },
+        {
+          "name"     = "data"
+          "replicas" = 3
+          "roles"    = ["data"]
+          "resources" = {
+            "requests" = {
+              "cpu"    = "1"
+              "memory" = "2Gi"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# Outputs
+output "cluster_name" {
+  value = google_container_cluster.gke_autopilot.name
+}
+
+output "cluster_location" {
+  value = google_container_cluster.gke_autopilot.location
+}
+
+output "opensearch_endpoint" {
+  value = "http://opensearch-cluster-opensearch.${var.region}.svc.cluster.local:9200"
+}
