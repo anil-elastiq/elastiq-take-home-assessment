@@ -5,7 +5,7 @@ This project involves creating a Selenium automation script in Python to validat
 
 ---
 
-## Project Structure
+## File Structure
 The project contains the following files:
 - **`qa_selenium_test.py`**: Main Python script containing test cases.
 - **`conftest.py`**: pytest setup file having setup & teardown, logs features
