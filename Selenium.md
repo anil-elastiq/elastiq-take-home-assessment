@@ -1,26 +1,41 @@
-# QA Selenium Automation with Python
+# qa_selenium_test.py
 
-## Objective
-Create a Selenium automation script in Python to validate search functionality on the **Selenium Playground** website.
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import time
 
-> [!NOTE]
-> **Deliverables:**
-> 1. A Python script (`qa_selenium_test.py`) that:
->    - Navigates to the [Selenium Playground Table Search Demo](https://www.lambdatest.com/selenium-playground/table-sort-search-demo).
->    - Locates and interacts with the search box to search for "New York".
->    - Validates that the search results show **5 entries out of 24 total entries**.
-> 2. A brief **README** explaining the approach and how to run the script.
-> 3. Any additional setup instructions (e.g., local environment, dependencies, drivers etc).
+# Constants
+demo_url = "https://www.seleniumeasy.com/test/table-search-filter-demo.html"
+search_term = "New York"
+expected_entries = 5
 
-> [!TIP]
-> Use Python's `pytest` framework to structure your test cases.
+# Setup the WebDriver (Ensure you have the appropriate driver installed and in PATH)
+driver = webdriver.Chrome()
+driver.maximize_window()
 
-> [!IMPORTANT]
-> - **Environment Setup:** Follow good coding practices and ensure the script is compatible with the latest stable Selenium version.
-> - **Browser Compatibility:** Test with at least one major browser (e.g., Chrome, Firefox).
+try:
+    # Navigate to the Selenium Playground Table Search Demo
+    driver.get(demo_url)
 
-> [!CAUTION]
-> - **Assertions:** Ensure all validations use robust assertion statements.
-> - **Code Quality:** Follow PEP8 standards for Python code.
+    # Allow page to load
+    time.sleep(2)
 
-**Good luck!**
+    # Locate the search box and enter the search term
+    search_box = driver.find_element(By.ID, "task-table-filter")
+    search_box.send_keys(search_term)
+
+    # Allow search results to filter
+    time.sleep(1)
+
+    # Locate the table rows
+    rows = driver.find_elements(By.XPATH, "//table[@id='task-table']/tbody/tr")
+
+    # Filter visible rows
+    visible_rows = [row for row in rows if row.is_displayed()]
+
+    # Validate the search results
+    if len(visible_rows) == expected_entries:
+        print(f"Test Passed: Found {len(visible_rows)} entries as expected.")
+    else:
+        print(f"Test Failed: Expe
