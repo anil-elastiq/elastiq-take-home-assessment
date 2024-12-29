@@ -16,7 +16,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 @pytest.fixture(scope="function")
-def setup():
+def browser():
     """
     Fixture to set up and tear down the browser.
     """

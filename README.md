@@ -24,6 +24,10 @@ Before running the script, ensure you have the following installed:
    ```bash
    pip install pylint
    ```
+7. **HTML**: For report:
+   ```bash
+   pip install pytest-html
+   ```
 
 ## Files:
 - `qa_selenium_test.py`: Main test script.
