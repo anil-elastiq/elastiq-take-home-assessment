@@ -1,26 +1,44 @@
-# QA Selenium Automation with Python
+import pytest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import time
 
-## Objective
-Create a Selenium automation script in Python to validate search functionality on the **Selenium Playground** website.
+@pytest.fixture(scope="module")
+def setup():
+    # Setup Chrome WebDriver
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver.get("https://www.selenium.dev/selenium/playground/")
+    driver.maximize_window()
+    yield driver  # This is the setup for the test, teardown happens after the yield
+    driver.quit()  # Teardown, close browser after tests complete
 
-> [!NOTE]
-> **Deliverables:**
-> 1. A Python script (`qa_selenium_test.py`) that:
->    - Navigates to the [Selenium Playground Table Search Demo](https://www.lambdatest.com/selenium-playground/table-sort-search-demo).
->    - Locates and interacts with the search box to search for "New York".
->    - Validates that the search results show **5 entries out of 24 total entries**.
-> 2. A brief **README** explaining the approach and how to run the script.
-> 3. Any additional setup instructions (e.g., local environment, dependencies, drivers etc).
+def test_search_functionality(setup):
+    driver = setup
+    
+    # Locate the search input field and search button
+    search_box = driver.find_element(By.NAME, "q")
+    assert search_box.is_displayed(), "Search box should be visible on the page"
+    
+    # Enter search term into the search box
+    search_term = "Selenium"
+    search_box.send_keys(search_term)
+    
+    # Press 'Enter' to initiate the search
+    search_box.send_keys(Keys.RETURN)
+    
+    # Wait for a while to ensure search results have time to load
+    time.sleep(2)  # You can use WebDriverWait for better synchronization
+    
+    # Verify if search results contain the expected term
+    search_results = driver.find_elements(By.CSS_SELECTOR, ".search-result")
+    assert len(search_results) > 0, "No search results found"
+    
+    # Optionally, check if the search term is mentioned in the search results
+    for result in search_results:
+        assert search_term.lower() in result.text.lower(), f"Search term '{search_term}' not found in result"
+    
+    print("Search functionality test passed!")
 
-> [!TIP]
-> Use Python's `pytest` framework to structure your test cases.
-
-> [!IMPORTANT]
-> - **Environment Setup:** Follow good coding practices and ensure the script is compatible with the latest stable Selenium version.
-> - **Browser Compatibility:** Test with at least one major browser (e.g., Chrome, Firefox).
-
-> [!CAUTION]
-> - **Assertions:** Ensure all validations use robust assertion statements.
-> - **Code Quality:** Follow PEP8 standards for Python code.
-
-**Good luck!**
