@@ -18,5 +18,21 @@ Host an open-source OpenSearch solution inside **Google Cloud Autopilot**, **GKE
 > [!CAUTION]
 > - **K8S Best Practices:** Follow cloud security best practices for cluster setup and management e.g., least privilege principle, network policies, node auto-upgrade.
 > - **Cost Optimized:** Ensure that all resources created follow cloud cost-optimization guidelines.
+>
+> # Selenium Playground Search Validation Test
+
+This repository contains a Selenium-based test to validate the search functionality on the **Selenium Playground Table Search Demo**.
+
+## Requirements
+- Python 3.x
+- Selenium
+- pytest
+- webdriver-manager
+
+## Setup
+1. Install Python dependencies using pip:
+   ```bash
+   pip install selenium pytest webdriver-manager
+
 
 **Good luck!**
