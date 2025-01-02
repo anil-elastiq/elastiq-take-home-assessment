@@ -1,0 +1,18 @@
+#import statements:
+pytest: A framework used for writing test cases.
+selenium.webdriver: Module for automating web browser interaction.
+By: A class that provides methods to locate elements on a webpage.
+#Constants:
+URL: The target URL for the Selenium Playground Table Sort & Search Demo.
+SEARCH_TEXT: The search term to be entered in the search box.
+EXPECTED_RESULTS: The number of expected search results.
+#Setup Browser:
+setup_browser(): Initializes the Chrome driver, maximizes the browser window, navigates to the target URL, and returns the driver instance.
+#Test Search Functionality:
+test_search_functionality(): Contains the logic for the test case.
+Sets up the browser using the setup_browser() function.
+Locates the search box using XPath and enters the search term.
+Fetches the search results based on the visibility of table rows.
+Asserts that the number of search results matches the expected count.
+#Main Execution:
+Main Execution: Ensures that pytest runs the test case when the script is executed.
