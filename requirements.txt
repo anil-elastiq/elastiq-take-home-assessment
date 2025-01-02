@@ -1,0 +1,4 @@
+# Core libraries
+selenium==4.27.1
+pytest==8.3.4
+webdriver-manager==4.0.2
