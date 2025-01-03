@@ -83,5 +83,4 @@ The script adheres to the following principles:
 ---
 
 ## Support
-For any issues, please contact [Your Email/Contact Info].
-
+For any issues, please contact navedmd700@gmail.com
